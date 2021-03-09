@@ -1,0 +1,19 @@
+//This line is ignored. The format is as follows: starting from next line, add a title. then on next 8 lines, add corners of obstacles in following order: ful, fur, fdl, fdr, bul, bur, bdl, bdr. separate xyz values with commas (no spaces)
+Right Block
+2,-25,15
+30,-25,15
+2,-25,0
+30,-25,0
+2,25,15
+30,25,15
+2,25,0
+30,25,0
+Left Block
+-30,-25,15
+-2,-25,15
+-30,-25,0
+-2,-25,0
+-30,25,15
+-2,25,15
+-30,25,0
+-2,25,0

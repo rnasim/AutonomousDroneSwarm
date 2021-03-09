@@ -19,10 +19,12 @@ STRICT_MODE_ON
 #include <chrono>
 #include <thread> 
 #include <future>
+#include <list>
 
 using namespace msr::airlib;
 using namespace std;
 
+void singleDrone();
 void droneTest();
 std::vector<Vector3r> generatePath(std::vector<Node*> path, Vector3r loc);
 
@@ -38,6 +40,20 @@ struct DroneRRTSTAR {
 	}
 	~DroneRRTSTAR() {
 
+	}
+};
+
+struct CollisionDetails {
+	int collision_index;
+	int colliding_drone;
+	int colliding_drone_safe_index;
+	bool active_collision;
+
+	CollisionDetails(int coll_ind, int coll_drone, int coll_drone_ind, bool active) {
+		collision_index = coll_ind;
+		colliding_drone = coll_drone;
+		colliding_drone_safe_index = coll_drone_ind;
+		active_collision = active;
 	}
 };
 
