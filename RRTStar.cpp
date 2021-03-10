@@ -49,7 +49,7 @@ void BiRRTStar::CallRRTStar() {
 		graphA->addEdge(nearest_node, new_node, cost);
 
 		//if (i % 100 == 0) {
-		new_node->printNode();
+		//new_node->printNode();
 		//}
 
 		std::vector<Node*> neighbors = nearestNeighbors(new_node, graphA);

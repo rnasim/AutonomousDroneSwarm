@@ -24,10 +24,6 @@ STRICT_MODE_ON
 using namespace msr::airlib;
 using namespace std;
 
-void singleDrone();
-void droneTest();
-std::vector<Vector3r> generatePath(std::vector<Node*> path, Vector3r loc);
-
 struct DroneRRTSTAR {
 	msr::airlib::MultirotorRpcLibClient* client;
 	BiRRTStar* rrt_graph;
@@ -56,5 +52,13 @@ struct CollisionDetails {
 		active_collision = active;
 	}
 };
+
+void singleDrone();
+void droneTest();
+std::vector<Vector3r> generatePath(std::vector<Node*> path, Vector3r loc);
+std::vector<CollisionDetails*> droneCollisionCheck(int droneNum, std::vector<std::vector<Node*>> dronesPathList);
+
+
+
 
 #endif

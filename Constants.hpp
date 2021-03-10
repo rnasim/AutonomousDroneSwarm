@@ -2,7 +2,7 @@
 #define CONSTANTS_H
 
 // WORLD SEED
-const int SEED = 69;
+const int SEED = 420;
 
 // Number of drones
 const int NUMDRONES = 10;
@@ -45,7 +45,7 @@ const int NUMCELLSX = 2;
 const int NUMCELLSY = 2;
 const int NUMCELLSZ = 2;
 
-const float DRONESIZE = 0;
+const float DRONESIZE = 2;
 const float MINOBSTDIST = DRONESIZE * 1.5;
 
 const int BRANCHSIZE = 2;

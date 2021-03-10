@@ -104,8 +104,8 @@ static float findDistance(Coord* coord_src, Coord* coord_dest)
     float dist_z = pow((coord_dest->z - coord_src->z), 2);
 
     float total_distance = sqrt((dist_x + dist_y + dist_z));
-    /*std::cout << "dx: " << dist_x << " dy: " << dist_y << " dz: " << dist_z << std::endl;
-    std::cout << "Total Distance: " << total_distance << std::endl;*/
+    //std::cout << "dx: " << dist_x << " dy: " << dist_y << " dz: " << dist_z << std::endl;
+    //std::cout << "Total Distance: " << total_distance << std::endl;
     return total_distance;
 }
 

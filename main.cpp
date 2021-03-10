@@ -45,6 +45,7 @@ void threadLol() {
     }
 }
 
+
 int main()
 {
     //srand((unsigned)time(NULL));
@@ -53,7 +54,26 @@ int main()
     //singleRRT();
     //singleDrone();
     droneTest();
+    //std::vector<CollisionDetails*> collisions;
+    //std::vector<Node*> path_1, path_2;
+    //std::vector<std::vector<Node*>> allDronePaths;
 
+    //path_1.push_back(new Node(0, Coord(0, 0, 0)));
+    //path_1.push_back(new Node(1, Coord(25, 25, 25)));
+    //path_1.push_back(new Node(2, Coord(40, 50, 5)));
+    //
+
+    //path_2.push_back(new Node(0, Coord(10, 0, 0)));
+    //path_2.push_back(new Node(1, Coord(24, 24, 24)));
+    //path_2.push_back(new Node(2, Coord(35, 35, 35)));
+    //
+
+    //allDronePaths.push_back(path_1);
+    //allDronePaths.push_back(path_2);
+
+    //for (int i = 0; i < allDronePaths.size(); i++) {
+    //    droneCollisionCheck(i, allDronePaths);
+    //}
 
     _CrtDumpMemoryLeaks();
     return 0;
