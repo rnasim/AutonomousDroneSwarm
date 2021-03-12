@@ -441,38 +441,38 @@ bool BiRRTStar::inGoalRadiusSingle(Coord* node_coord) {
 }
 
 std::vector<Node*> BiRRTStar::makePath(Node* last_node) {
-	std::vector<Node*> path;
-	Node* node = last_node;
-	Node* check = last_node->parent;
-	while (node->parent) {
-		if (check->parent) {
-			if (!obs->collisionCheck(node->coord, check->parent->coord)) {
-				check = check->parent;
-			}
-			else {
-				path.push_back(node);
-				node = check;
-				check = node->parent;
-			}
-		}
-		else {
-			path.push_back(node);
-			node = check;
-		}
-	}
-	path.push_back(node);
-
-	return path;
-
 	//std::vector<Node*> path;
 	//Node* node = last_node;
+	//Node* check = last_node->parent;
 	//while (node->parent) {
-	//	path.push_back(node);
-	//	node = node->parent;
+	//	if (check->parent) {
+	//		if (!obs->collisionCheck(node->coord, check->parent->coord)) {
+	//			check = check->parent;
+	//		}
+	//		else {
+	//			path.push_back(node);
+	//			node = check;
+	//			check = node->parent;
+	//		}
+	//	}
+	//	else {
+	//		path.push_back(node);
+	//		node = check;
+	//	}
 	//}
 	//path.push_back(node);
 
 	//return path;
+
+	std::vector<Node*> path;
+	Node* node = last_node;
+	while (node->parent) {
+		path.push_back(node);
+		node = node->parent;
+	}
+	path.push_back(node);
+
+	return path;
 }
 
 	/**********************************/

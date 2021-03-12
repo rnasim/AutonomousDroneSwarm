@@ -48,8 +48,8 @@ void threadLol() {
 
 int main()
 {
-    //srand((unsigned)time(NULL));
-    srand(SEED);
+    srand((unsigned)time(NULL));
+    //srand(SEED);
     //threadLol();
     //singleRRT();
     //singleDrone();

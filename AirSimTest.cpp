@@ -44,7 +44,7 @@ std::vector<Vector3r> generatePath(std::vector<Node*> path, Vector3r loc) {
 bool distanceCheck(Node* A, Node* D) {
 
 	float x;
-	int detection_size = 5;
+	int detection_size = 25;
 
 	x = findDistance(A->coord, D->coord);
 	if (x < DRONESIZE * detection_size) {
@@ -54,38 +54,39 @@ bool distanceCheck(Node* A, Node* D) {
 	return false;
 }
 
-std::vector<CollisionDetails*> droneCollisionCheck(int droneNum, std::vector<std::vector<Node*>> dronesPathList) {
+std::vector<CollisionDetails*> droneCollisionCheck(int droneNum, std::vector<std::vector<Node*>> dronesPathList, std::vector<std::vector<Node*>> allDronesPaths) {
 	std::vector<CollisionDetails*> collisions;
 
 	//compare each drone segment to our current paths ones
-	for (int i = 0; i < dronesPathList.size(); i++) {
-		std::vector<Node*> dronePath = dronesPathList.at(droneNum);
+	std::cout << "dronepathlist size" << dronesPathList.size() <<"   Drone num:"<< droneNum << std::endl;
+	for (int i = 0; i < allDronesPaths.size(); i++) {
+		std::vector<Node*> dronePath = allDronesPaths.at(droneNum);
 		//skip comparing with itself
 		if (i == droneNum) {
 			continue;
 		}
-		for (int j = 0; j < dronesPathList.at(i).size()-1; j++) {
+		for (int j = 0; j < allDronesPaths.at(i).size()-1; j++) {
 			bool collision;
 			//loop through current drones path and check if each rectangle intersects or nah
 			for (int k = 0; k < dronePath.size() - 1; k++) {
 				//std::cout << "Enter Third Loop\n";
 				//collision = distanceCheck(dronePath.at(k), dronePath.at(k + 1), dronesPathList.at(i).at(j), dronesPathList.at(i).at(j + 1));
-				collision = distanceCheck(dronePath.at(k), dronesPathList.at(i).at(j));
+				collision = distanceCheck(dronePath.at(k), allDronesPaths.at(i).at(j));
 				if (collision) {
 					//std::cout << "Collision\n";
-					collisions.push_back(new CollisionDetails(k, i, j+1, true));
+					collisions.push_back(new CollisionDetails(k, i, j+1, false));
 					break;
 				}
 			}
 		}
 	}
-	std::cout << "Collisions size: " << collisions.size() << std::endl;
+	/*std::cout << "Collisions size: " << collisions.size() << std::endl;
 	std::cout << "Drone " << droneNum << std::endl;
 	for (int j = 0; j < collisions.size(); j++) {
 		std::cout << "Collding drone: " << collisions.at(j)->colliding_drone << std::endl;
 		std::cout << "Collding drone safe index: " << collisions.at(j)->colliding_drone_safe_index << std::endl;
 		std::cout << "Collision Index: " << collisions.at(j)->collision_index << std::endl;
-	}
+	}*/
 	return collisions;
 }
 
@@ -93,37 +94,57 @@ std::vector<CollisionDetails*> droneCollisionCheck(int droneNum, std::vector<std
 void fly(DroneRRTSTAR drone, int indexOfDrones[], int curr, std::vector<std::vector<CollisionDetails*>> droneIntersections, int priority[]) {
 	DrivetrainType driveTrain = DrivetrainType::MaxDegreeOfFreedom;
 	YawMode yaw_mode(true, 0);
-	float velocity = 4.f;
+	float velocity = 3.f;
 	float moveTimeout = 30.0f;
 	float lookahead = -1.0f;
 	float adaptive_lookahead = 1.0f;
 	string droneName = "Drone" + to_string(curr + 1);
 	auto pos = drone.client->simGetObjectPose(droneName).position;
+	std::cout << "DroneINTERSECTION SIZE: " << droneIntersections.at(curr).size() << std::endl;
 	indexOfDrones[curr] = 0;
+	
 	for (int j = 0; j < drone.rrt_graph->getPath().size(); j++) {
+		
 		//check
-		int waiting_for_drone;
+		//int waiting_for_drone;
 		int flag = -1;
 		for (int k = 0; k < droneIntersections.at(curr).size(); k++) {
-			if (droneIntersections.at(curr).at(k)->collision_index == j) {
-				if (indexOfDrones[droneIntersections.at(curr).at(k)->colliding_drone] >= droneIntersections.at(curr).at(k)->colliding_drone_safe_index) {
+			if (droneIntersections.at(curr).at(k)->collision_index < j + 5) {
+				
+				/*if (indexOfDrones[droneIntersections.at(curr).at(k)->colliding_drone] >= droneIntersections.at(curr).at(k)->colliding_drone_safe_index) {
 					droneIntersections.at(curr).at(k)->active_collision = false;	
+				}*/
+
+				if ((indexOfDrones[droneIntersections.at(curr).at(k)->colliding_drone] <= droneIntersections.at(curr).at(k)->colliding_drone_safe_index) &&
+					(droneIntersections.at(curr).at(k)->colliding_drone_safe_index - indexOfDrones[droneIntersections.at(curr).at(k)->colliding_drone] <= 8)) {
+					//&&indexOfDrones[droneIntersections.at(curr).at(k)->colliding_drone] <= droneIntersections.at(curr).at(k)->colliding_drone_safe_index) {
+					std::cout << "collision True\n";
+					droneIntersections.at(curr).at(k)->active_collision = true;
+					flag = k;
 				}
-				for (int i = 0; i < droneIntersections.at(droneIntersections.at(curr).at(k)->colliding_drone).size(); i++) {
-					if (!droneIntersections.at(droneIntersections.at(curr).at(k)->colliding_drone).at(i)->active_collision) {
-						flag = -2;
-						break;
-					}
-				}
-				if (flag == -2) {
+				else {
+					std::cout << "collision False\n";
+					std::cout << "Flag = " << flag << std::endl;
+					droneIntersections.at(curr).at(k)->active_collision = false;
 					break;
 				}
 
-				if (droneIntersections.at(curr).at(k)->active_collision) {
-					waiting_for_drone = droneIntersections.at(curr).at(k)->colliding_drone;
-					flag = k;
-					break;
-				}
+				//for (int i = 0; i < droneIntersections.at(droneIntersections.at(curr).at(k)->colliding_drone).size(); i++) {
+				//	if (droneIntersections.at(droneIntersections.at(curr).at(k)->colliding_drone).at(i)->active_collision) {
+				//		flag = -2;
+				//		break;
+				//	}
+				//}
+				//if (flag == -2) {
+				//	break;
+				//}
+
+				//if (droneIntersections.at(curr).at(k)->active_collision) {
+				//	waiting_for_drone = droneIntersections.at(curr).at(k)->colliding_drone;
+				//	std::cout << "Index of Colliding Drone: " << indexOfDrones[droneIntersections.at(curr).at(k)->colliding_drone] << std::endl;
+				//	flag = k;
+				//	break;
+				//}
 			}
 		}
 
@@ -134,9 +155,10 @@ void fly(DroneRRTSTAR drone, int indexOfDrones[], int curr, std::vector<std::vec
 				priority[0] = curr + 1;
 			}
 			indexOfDrones[curr] = j;
+			
 		}
 		else {
-			std::cout << "Drone " << curr + 1 << " is waiting for " << waiting_for_drone + 1<< std::endl;
+			std::cout << "Drone " << curr + 1 << " is waiting for \n"; //<< waiting_for_drone + 1<< std::endl;
 			std::this_thread::sleep_for(std::chrono::duration<double>(2.5));
 			j--;
 		}
@@ -152,7 +174,7 @@ void droneTest() {
 
 	//
 	std::vector<std::vector<CollisionDetails*>> pathIntersectionDetails;
-	int indexOfDrones[NUMDRONES];
+	static int indexOfDrones[NUMDRONES];
 	int priority[1];
 	std::vector<std::vector<Node*>> allDronePaths;
 	//pathIntersectionDetails.resize(NUMDRONES);
@@ -181,7 +203,7 @@ void droneTest() {
 		//}
 
 		drones[0].goal = new Coord(20, -45, 5);
-		drones[1].goal = new Coord(20, 30, 5);
+		drones[1].goal = new Coord(20, -30, 5);
 		drones[2].goal = new Coord(-20, -45, 5);
 		drones[3].goal = new Coord(-20, -40, 5);
 		drones[4].goal = new Coord(0, -45, 5);
@@ -240,10 +262,11 @@ void droneTest() {
 		std::cout << "Press Enter to check drone path collisions" << std::endl; std::cin.get();
 		std::vector<std::vector<Node*>> flyingDrones;
 		for (int i = 0; i < droneAmount; i++) {
-			pathIntersectionDetails.push_back(droneCollisionCheck(i, allDronePaths));
-			//flyingDrones.push_back(allDronePaths.at(i));
+			pathIntersectionDetails.push_back(droneCollisionCheck(i, flyingDrones, allDronePaths));
+			flyingDrones.push_back(allDronePaths.at(i));
 		}
-		//std::cout << "pathhinterseacoitpahtohawoipj " << pathIntersectionDetails.size() << std::endl;
+		
+		std::cout << "pathhinterseacoitpahtohawoipj " << pathIntersectionDetails.size() << std::endl;
 		//for (int i = 0; i < pathIntersectionDetails.size(); i++) {
 		//	std::cout << "Drone " << i + 1 << std::endl;
 		//	for (int j = 0; j < pathIntersectionDetails.at(i).size(); j++) {

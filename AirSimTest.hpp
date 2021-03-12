@@ -56,7 +56,7 @@ struct CollisionDetails {
 void singleDrone();
 void droneTest();
 std::vector<Vector3r> generatePath(std::vector<Node*> path, Vector3r loc);
-std::vector<CollisionDetails*> droneCollisionCheck(int droneNum, std::vector<std::vector<Node*>> dronesPathList);
+std::vector<CollisionDetails*> droneCollisionCheck(int droneNum, std::vector<std::vector<Node*>> dronesPathList, std::vector<std::vector<Node*>> allDronesPaths);
 
 
 

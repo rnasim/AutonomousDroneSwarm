@@ -2,7 +2,7 @@
 #define CONSTANTS_H
 
 // WORLD SEED
-const int SEED = 420;
+const int SEED = 6969; //42069, 69 6969
 
 // Number of drones
 const int NUMDRONES = 10;
